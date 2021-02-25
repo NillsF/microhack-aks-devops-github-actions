@@ -1,0 +1,3 @@
+from nginx:alpine
+copy index.html /var/htlm/..... #need to update to correct directory
+RUN nginx.... 
