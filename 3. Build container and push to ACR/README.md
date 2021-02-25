@@ -1,0 +1,2 @@
+# Build a container and push to ACR
+The goal of this section is to build a GitHub Actions pipeline that will build a new container, push it to ACR and then update the deployed application on your cluster.
