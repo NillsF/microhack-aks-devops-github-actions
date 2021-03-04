@@ -12,3 +12,8 @@ az aks create \
     --enable-addons monitoring \
     --generate-ssh-keys \
     --kubernetes-version 1.17.8
+    
+az aks update \
+    --resource-group GitHub-AKS-Microhack-rg \
+    --name githubmhakscluster \
+    --attach-acr $ACR-NAME
