@@ -1,0 +1,14 @@
+# Create a resource group
+az group create --name GitHub-AKS-Microhack-rg --location westus
+
+# Create a container registry
+az acr create --resource-group GitHub-AKS-Microhack-rg --name githubaksACR --sku Basic
+
+# Create a Kubernetes cluster
+az aks create \
+    --resource-group GitHub-AKS-Microhack-rg \
+    --name githubmhakscluster \
+    --node-count 1 \
+    --enable-addons monitoring \
+    --generate-ssh-keys \
+    --kubernetes-version 1.17.8
