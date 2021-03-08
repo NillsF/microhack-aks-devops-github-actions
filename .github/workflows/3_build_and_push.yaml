@@ -40,7 +40,7 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v2
         with:
-          context: ./3. Build container and push to ACR
+          context: "./3. Build container and push to ACR"
           push: true
           tags: $ACRNAME.azurecr.io/microhack/website:${{ github.run_number }}
           
