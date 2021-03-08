@@ -1,3 +1,2 @@
-from nginx:alpine
-copy index.html /var/htlm/..... #need to update to correct directory
-RUN nginx.... 
+FROM nginx:1.19.7-alpine
+COPY index.html /usr/share/nginx/html/index.html
