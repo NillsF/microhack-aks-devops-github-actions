@@ -42,7 +42,7 @@ jobs:
         with:
           context: "./3. Build container and push to ACR"
           push: true
-          tags: $ACRNAME.azurecr.io/microhack/website:${{ github.run_number }}
+          tags: ${{ env.ACRNAME }}.azurecr.io/microhack/website:${{ github.run_number }}
           
           
           
