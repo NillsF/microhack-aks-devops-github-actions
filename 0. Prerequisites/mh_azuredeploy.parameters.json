@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "clusterName": {
+        "value": "githubakscluster"
+      },      
+      "dnsPrefix": {
+        "value": "mh"
+      },
+      "linuxAdminUsername": {
+        "value": "mhadmin"
+      },
+      "sshRSAPublicKey": {
+        "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCzj0aNRrdFS6VPtM0+GncLQku0fPz+4gr4QCRUiKhNqkj9oUeBR02pZ4el/gG+XIpUSEbXFzOIIigJ1xS3N/H18G9BMNw2/19/RCfRNcuTWb7gD4SEZZPSkY5/mdh7V4pCJxnLMHxWsO6gOb+YahoP0XRG9Gg1jMyPj8ZoGoUveaS9K48w4a8JcnW3uW7WJLiobPmvvhXnx5hMvap9/a/2FP2hFgek5AWIN4Sa3ZNx/qgYyeBpPF5z0bfz0NrlfOgoxITrEYys3zroD86jWVhypdgDwkYx7Z4j2QxlTwlyU2Du9Z+xbP5U8KyL/3rwOf+hz+MDhv1aFuMvfSY9O+VP redmond\\kathanga@DESKTOP-K44810S"
+      },
+      "acrName": {
+        "value": "mhacr1"
+      },
+      "acrAdminUserEnabled": {
+        "value": false
+      },
+      "spid": {
+        "value": "f4b77985-638e-4130-9592-12403cb22d76"
+      },
+      "spsecret": {
+        "value": "7ekUnwzlx3wGDxU.1ZeTu1g-UkVxuoT_bT"
+      }
+    }
+  }

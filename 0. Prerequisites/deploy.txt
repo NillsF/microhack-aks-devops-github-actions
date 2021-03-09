@@ -1,19 +1,14 @@
 # Create a resource group
 az group create --name GitHub-AKS-Microhack-rg --location westus
 
-# Create a container registry
-az acr create --resource-group GitHub-AKS-Microhack-rg --name githubaksACR --sku Basic
+# Create Service Principal
+az ad sp create-for-rbac --skip-assignment
 
-# Create a Kubernetes cluster
-az aks create \
-    --resource-group GitHub-AKS-Microhack-rg \
-    --name githubmhakscluster \
-    --node-count 1 \
-    --enable-addons monitoring \
-    --generate-ssh-keys \
-    --kubernetes-version 1.17.8
-    
-az aks update \
-    --resource-group GitHub-AKS-Microhack-rg \
-    --name githubmhakscluster \
-    --attach-acr $ACR-NAME
+# Deploy AKS and ACR with ARM template and parameters
+az deployment group create --resource-group GitHub-AKS-Microhack-rg --template-file "mh_azuredeploy.json" --parameters "mh_azuredeploy.parameters.json"
+
+# Configure ACR for AKS Cluster
+az aks update --resource-group GitHub-AKS-Microhack-rg --name githubakscluster --attach-acr $ACR-NAME
+
+# Build Image and upload it to ACR
+az acr build --registry mhacr1 --image index:v1 . 
