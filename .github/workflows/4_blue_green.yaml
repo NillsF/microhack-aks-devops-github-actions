@@ -58,9 +58,9 @@ jobs:
           resource-group: rg-handsonaks
           cluster-name: handsonaks
 
-      - name: First time helm install if the Chart hasn't been installed yet
+      - name: Check if chart is installed
         continue-on-error: true
-        run: echo "STATUS='$(helm status bg-pipeline )'" >> $GITHUB_ENV
+        run: echo "STATUS='$(helm status bg-pipeline | grep STATUS | awk -F ' ' '{print $2}')'" >> $GITHUB_ENV
           
       - name: Install if status is not set.
         if: ${{ env.STATUS == null }}
