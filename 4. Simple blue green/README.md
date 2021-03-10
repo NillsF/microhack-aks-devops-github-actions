@@ -4,7 +4,7 @@ The goal of this section is to build a GitHub Actions pipeline that willcreate a
 Before you start, delete the previous helm chart that was deployed using GH actions in step 3. You can execute this in cloud shell in the Azure portal
 ```
 az aks get-credentials -n <clustername> -g <cluster-rg>
-helm delete website
+helm delete pipeline
 ```
 
 # Introduction
@@ -44,7 +44,7 @@ You'll build a new pipeline for this action. The beginning of the pipeline (the 
 ```yaml
 # This is a basic workflow to help you get started with Actions
 
-name: Excersize 3, build container and update
+name: Excersize 4 blue green
 
 # Controls when the action will run. 
 on:
@@ -89,6 +89,12 @@ jobs:
           tags: ${{ env.ACRNAME }}.azurecr.io/microhack/website:${{ github.run_number }}
           
 ```
+
+Now the intersting piece begins. 
+
+The first 
+
+
 
 ## needed
 Need to figure out blue/green logic
