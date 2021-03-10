@@ -84,7 +84,7 @@ jobs:
           fi
           helm upgrade bg-pipeline "4. Simple blue green/website" --reuse-values \
               --set $UPDATE.repository=$ACRNAME.azurecr.io/microhack/website \
-              --set $UPDATE.tag=${{ github.run_number }} \
+              --set $UPDATE.tag=${{ github.run_number }} 
           kubectl rollout status deployment bg-pipeline-blue-green-$UPDATE
         
       - name: Flip production service
