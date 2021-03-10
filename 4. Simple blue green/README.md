@@ -84,16 +84,85 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v2
         with:
-          context: "./3. Build container and push to ACR"
+          context: "./4. Simple blue green"
           push: true
           tags: ${{ env.ACRNAME }}.azurecr.io/microhack/website:${{ github.run_number }}
           
 ```
 
-Now the intersting piece begins. 
+Now the intersting piece begins, running the blue green update using helm. Let's build the pipeline progressively:
+```yaml
+  CD:
+    runs-on: ubuntu-latest
+    needs: CI
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
 
-The first 
+      - name: Azure Kubernetes set context
+        uses: Azure/aks-set-context@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          resource-group: <rg of cluster>
+          cluster-name: <cluster name>
+```
+This piece is the same as last time. Git checkout and getting the cluster credentials on the GH worker.
+```yaml
+      - name: Check if chart is installed
+        continue-on-error: true
+        run: echo "STATUS='$(helm status bg-pipeline | grep STATUS | awk -F ' ' '{print $2}')'" >> $GITHUB_ENV
+```
+This step above checks if the chart with the name bg-pipeline is installed already. It outputs the output of helm status to a github environment variable that can be reused later. The logic you'll use in the next steps is:
+- If the chart is not installed, install the chart and configure blue and green with the current image.
+- If the chart is already install, update the non-prod deployment and then flip the service.
 
+Let's explore how this can be done:
+```yaml
+      - name: Install if status is not set.
+        if: ${{ env.STATUS == null }}
+        run: helm install bg-pipeline "4. Simple blue green/website" \
+            --set blue.repository=$ACRNAME.azurecr.io/microhack/website \
+            --set blue.tag=${{ github.run_number }} \
+            --set green.repository=$ACRNAME.azurecr.io/microhack/website \
+            --set green.tag=${{ github.run_number }}         \
+            --set production=blue       
+```
+The step above will install the chart if the status is not set. Notice the if condition in the action. It sets up the blue and green deployment up with the same version.
+```yaml
+      - name: Upgrade if status is not set
+        if: ${{ env.STATUS != null }}
+        run: |
+          COLOR=`kubectl get svc bg-pipeline-blue-green -o yaml | grep " color" | awk -F ' ' '{print $2}'`
+          echo "Current prod is $COLOR"
+          if [ "$COLOR" = "blue" ]
+          then
+            echo "UPDATE=green" >> $GITHUB_ENV
+            UPDATE=green
+          else
+            echo "UPDATE=blue" >> $GITHUB_ENV
+            UPDATE=blue
+          fi
+          helm upgrade bg-pipeline "4. Simple blue green/website" --reuse-values \
+              --set $UPDATE.repository=$ACRNAME.azurecr.io/microhack/website \
+              --set $UPDATE.tag=${{ github.run_number }} 
+          kubectl rollout status deployment bg-pipeline-blue-green-$UPDATE
+```
+Next up, if the status is not null (meaning the chart is installed already) you'll update the non-prod deployment. Therefore, you get which deployment is serving traffic right now. You set the UPDATE variable both for the next action step as well as for the current action (hence you seeing UPDATE=xxx twice), and then you update the helm chart. Notice how you're using ```--reuse-values``` here, this avoids helm overwriting values that aren't set in the command line.
+Finally here, you use ```kubectl rollout``` to monitor deployment status.
+```yaml
+      - name: Flip production service
+        if: ${{ env.STATUS != null }}
+        run: |
+          echo "Flipping service to $UPDATE"
+          helm upgrade bg-pipeline "4. Simple blue green/website" --reuse-values \
+              --set production=$UPDATE
+```
+This final step actually flips the service from one color to another. 
+
+Now, save the pipeline, and watch it run the first time. The first time it should install the chart.
+When it is installed, you can edit the index.html file and increment the version (and potentially change the background color if you want to) and then use the show-version script to monitor the changes.
+
+# Introducing a manual approval using GitHub environments
 
 
 ## needed
