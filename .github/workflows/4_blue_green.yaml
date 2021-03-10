@@ -79,8 +79,10 @@ jobs:
           if [ "$COLOR" = "blue" ]
           then
             echo "UPDATE=green" >> $GITHUB_ENV
+            UPDATE=green
           else
             echo "UPDATE=blue" >> $GITHUB_ENV
+            UPDATE=blue
           fi
           helm upgrade bg-pipeline "4. Simple blue green/website" --reuse-values \
               --set $UPDATE.repository=$ACRNAME.azurecr.io/microhack/website \
