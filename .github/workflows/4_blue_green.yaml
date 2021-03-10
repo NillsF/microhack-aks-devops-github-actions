@@ -60,7 +60,7 @@ jobs:
 
       - name: First time helm install if the Chart hasn't been installed yet
         continue-on-error: true
-        run: echo "STATUS=$(helm status bg-pipeline )" >> $GITHUB_ENV
+        run: echo "STATUS=$(helm status pipeline )" >> $GITHUB_ENV
           
       - name: Install if status is not set.
         if: ${{ env.STATUS == null }}
