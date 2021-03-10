@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: blue
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    color: blue
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ include "website.fullname" . }}-blue"
+  labels:
+    {{- include "website.labels" . | nindent 4 }}
+    color: blue
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "website.selectorLabels" . | nindent 6 }}
+      color: blue
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "website.selectorLabels" . | nindent 8 }}
+        color: blue
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.blue.repository }}:{{ .Values.blue.tag | default .Chart.AppVersion }}"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -138,5 +138,11 @@ Save this file and see the pipeline run. In GitHub actions, you should now see a
 
 To test the end-to-end pipeline, you can also make changes to the ```index.html``` file. Watch those changes go through the pipeline, and finally browse to your website to see the changes be applied. 
 
+Optionally, you can use the show-versions.sh script in either cloud shell or a local bash window to show the version that is returned. To run the script simply run:
+```bash
+sh show-versions.sh <ip address>
+```
+This will get the IP address 5 times per second and show you the current live version. As you're running this, you might notice that during the update you get a mix of v1 and v2 (or whatever version you're running). This is because by default kubernetes does a rolling update. In the next demo, you'll deploy a very basic version of a blue-green deployment in Kubernetes.
+
 ### nice to have
 local tool to get website version??? Shell script???

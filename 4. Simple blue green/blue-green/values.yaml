@@ -1,0 +1,23 @@
+# Default values for blue-green.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+production: blue
+
+blue:
+  repository: nfranssens/simple-website
+  tag: v3
+
+green:
+  repository: nfranssens/simple-website
+  tag: v2
+
+
+replicaCount: 5
+
+
+
+
+service:
+  type: LoadBalancer
+  port: 80
