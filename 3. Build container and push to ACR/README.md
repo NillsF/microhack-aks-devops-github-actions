@@ -144,5 +144,3 @@ sh show-versions.sh <ip address>
 ```
 This will get the IP address 5 times per second and show you the current live version. As you're running this, you might notice that during the update you get a mix of v1 and v2 (or whatever version you're running). This is because by default kubernetes does a rolling update. In the next demo, you'll deploy a very basic version of a blue-green deployment in Kubernetes.
 
-### nice to have
-local tool to get website version??? Shell script???
