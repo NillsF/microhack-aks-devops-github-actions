@@ -101,3 +101,4 @@ jobs:
           echo "Flipping service to $UPDATE"
           helm upgrade bg-pipeline "4. Simple blue green/website" --reuse-values \
               --set production=$UPDATE
+
