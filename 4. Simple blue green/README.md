@@ -111,12 +111,10 @@ This piece is the same as last time. Git checkout and getting the cluster creden
       - name: Check if chart is installed
         continue-on-error: true
         run: |
-          STATUS=$(helm ls  | grep bg-pipeline)
-          if [ -v $STATUS ]
-          then
-            echo "STATUS=install" >> $GITHUB_ENV
-          else
+          if helm status bg-pipeline ; then
             echo "STATUS=update" >> $GITHUB_ENV
+          else
+            echo "STATUS=install" >> $GITHUB_ENV
           fi
 ```
 This step above checks if the chart with the name bg-pipeline is installed already. It outputs the output of helm status to a github environment variable that can be reused later. The logic you'll use in the next steps is:

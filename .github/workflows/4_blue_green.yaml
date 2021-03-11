@@ -61,12 +61,10 @@ jobs:
       - name: Check if chart is installed
         continue-on-error: true
         run: |
-          STATUS=$(helm ls  | grep bg-pipeline)
-          if [ -v $STATUS ]
-          then
-            echo "STATUS=install" >> $GITHUB_ENV
-          else
+          if helm status bg-pipeline ; then
             echo "STATUS=update" >> $GITHUB_ENV
+          else
+            echo "STATUS=install" >> $GITHUB_ENV
           fi
 
       - name: Install if status is not set.
