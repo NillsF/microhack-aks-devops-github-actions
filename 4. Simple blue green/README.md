@@ -126,7 +126,7 @@ This step above checks if the chart with the name bg-pipeline is installed alrea
 Let's explore how this can be done:
 ```yaml
       - name: Install if status is not set.
-        if: ${{ env.STATUS == "install" }}
+        if: ${{ env.STATUS == 'install' }}
         run: helm install bg-pipeline "4. Simple blue green/website" \
             --set blue.repository=$ACRNAME.azurecr.io/microhack/website \
             --set blue.tag=${{ github.run_number }} \
@@ -137,7 +137,7 @@ Let's explore how this can be done:
 The step above will install the chart if the status is not set. Notice the if condition in the action. It sets up the blue and green deployment up with the same version.
 ```yaml
       - name: Upgrade if status is not set
-        if: ${{ env.STATUS == "update" }}
+        if: ${{ env.STATUS == 'update' }}
         run: |
           COLOR=`kubectl get svc bg-pipeline-blue-green -o yaml | grep " color" | awk -F ' ' '{print $2}'`
           echo "Current prod is $COLOR"
