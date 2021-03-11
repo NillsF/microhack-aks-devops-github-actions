@@ -60,10 +60,17 @@ jobs:
 
       - name: Check if chart is installed
         continue-on-error: true
-        run: echo "STATUS='$(helm status bg-pipeline | grep STATUS | awk -F ' ' '{print $2}')'" >> $GITHUB_ENV
-          
+        run: |
+          STATUS=$(helm ls  | grep bg-pipeline)
+          if [ -v $STATUS ]
+          then
+            echo "STATUS=install" >> $GITHUB_ENV
+          else
+            echo "STATUS=update" >> $GITHUB_ENV
+          fi
+
       - name: Install if status is not set.
-        if: ${{ env.STATUS == null }}
+        if: ${{ env.STATUS == "install" }}
         run: helm install bg-pipeline "4. Simple blue green/website" \
             --set blue.repository=$ACRNAME.azurecr.io/microhack/website \
             --set blue.tag=${{ github.run_number }} \
@@ -72,7 +79,7 @@ jobs:
             --set production=blue       
 
       - name: Upgrade if status is not set
-        if: ${{ env.STATUS != null }}
+        if: ${{ env.STATUS == "update" }}
         run: |
           COLOR=`kubectl get svc bg-pipeline-blue-green -o yaml | grep " color" | awk -F ' ' '{print $2}'`
           echo "Current prod is $COLOR"
@@ -90,7 +97,7 @@ jobs:
           kubectl rollout status deployment bg-pipeline-blue-green-$UPDATE
         
       - name: Flip production service
-        if: ${{ env.STATUS != null }}
+        if: ${{ env.STATUS == "update" }}
         run: |
           echo "Flipping service to $UPDATE"
           helm upgrade bg-pipeline "4. Simple blue green/website" --reuse-values \

@@ -158,7 +158,7 @@ Next up, if the status is not null (meaning the chart is installed already) you'
 Finally here, you use ```kubectl rollout``` to monitor deployment status.
 ```yaml
       - name: Flip production service
-        if: ${{ env.STATUS == "update" }}
+        if: ${{ env.STATUS != null }}
         run: |
           echo "Flipping service to $UPDATE"
           helm upgrade bg-pipeline "4. Simple blue green/website" --reuse-values \
