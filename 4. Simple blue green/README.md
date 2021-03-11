@@ -110,7 +110,14 @@ This piece is the same as last time. Git checkout and getting the cluster creden
 ```yaml
       - name: Check if chart is installed
         continue-on-error: true
-        run: echo "STATUS='$(helm status bg-pipeline | grep STATUS | awk -F ' ' '{print $2}')'" >> $GITHUB_ENV
+        run: |
+          STATUS=$(helm ls  | grep bg-pipeline)
+          if [ -v $STATUS ]
+          then
+            echo "STATUS=install" >> $GITHUB_ENV
+          else
+            echo "STATUS=update" >> $GITHUB_ENV
+          fi
 ```
 This step above checks if the chart with the name bg-pipeline is installed already. It outputs the output of helm status to a github environment variable that can be reused later. The logic you'll use in the next steps is:
 - If the chart is not installed, install the chart and configure blue and green with the current image.
@@ -119,7 +126,7 @@ This step above checks if the chart with the name bg-pipeline is installed alrea
 Let's explore how this can be done:
 ```yaml
       - name: Install if status is not set.
-        if: ${{ env.STATUS == null }}
+        if: ${{ env.STATUS == "install" }}
         run: helm install bg-pipeline "4. Simple blue green/website" \
             --set blue.repository=$ACRNAME.azurecr.io/microhack/website \
             --set blue.tag=${{ github.run_number }} \
@@ -130,7 +137,7 @@ Let's explore how this can be done:
 The step above will install the chart if the status is not set. Notice the if condition in the action. It sets up the blue and green deployment up with the same version.
 ```yaml
       - name: Upgrade if status is not set
-        if: ${{ env.STATUS != null }}
+        if: ${{ env.STATUS == "update" }}
         run: |
           COLOR=`kubectl get svc bg-pipeline-blue-green -o yaml | grep " color" | awk -F ' ' '{print $2}'`
           echo "Current prod is $COLOR"
@@ -151,7 +158,7 @@ Next up, if the status is not null (meaning the chart is installed already) you'
 Finally here, you use ```kubectl rollout``` to monitor deployment status.
 ```yaml
       - name: Flip production service
-        if: ${{ env.STATUS != null }}
+        if: ${{ env.STATUS == "update" }}
         run: |
           echo "Flipping service to $UPDATE"
           helm upgrade bg-pipeline "4. Simple blue green/website" --reuse-values \
