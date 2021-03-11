@@ -125,12 +125,13 @@ Let's explore how this can be done:
 ```yaml
       - name: Install if status is not set.
         if: ${{ env.STATUS == 'install' }}
-        run: helm install bg-pipeline "4. Simple blue green/website" \
-            --set blue.repository=$ACRNAME.azurecr.io/microhack/website \
-            --set blue.tag=${{ github.run_number }} \
-            --set green.repository=$ACRNAME.azurecr.io/microhack/website \
-            --set green.tag=${{ github.run_number }}         \
-            --set production=blue       
+        run: | 
+          helm install bg-pipeline "4. Simple blue green/website" \
+          --set blue.repository=$ACRNAME.azurecr.io/microhack/website \
+          --set blue.tag=${{ github.run_number }} \
+          --set green.repository=$ACRNAME.azurecr.io/microhack/website \
+          --set green.tag=${{ github.run_number }} \
+          --set production=blue       
 ```
 The step above will install the chart if the status is not set. Notice the if condition in the action. It sets up the blue and green deployment up with the same version.
 ```yaml
