@@ -102,6 +102,12 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v2 
+      - name: Azure Kubernetes set context
+        uses: Azure/aks-set-context@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          resource-group: rg-handsonaks
+          cluster-name: handsonaks
       - name: Check which flip is needed
         continue-on-error: true
         run: |
