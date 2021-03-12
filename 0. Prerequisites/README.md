@@ -13,7 +13,7 @@ To interact with Azure APIs, an AKS cluster requires either an Azure Active Dire
 
 Use the below command to create service prinicpal. Copy the JSON output and save it in a seperate file. You need this while configuring pipelines in GitHub Actions.
 
-**az ad sp create-for-rbac --sdk-auth**
+**az ad sp create-for-rbac -n {unique SP name} --sdk-auth**
 
 ## Create an SSH key Pair
 To access AKS nodes, you connect using an SSH key pair. Use the ssh-keygen command to generate SSH public and private key files.
