@@ -23,19 +23,7 @@
       "metadata": {
         "description": "Enable admin user that have push / pull permission to the registry."
       }
-    },
-    "spid": {
-        "type": "string",
-        "metadata": {
-          "description": "Optional DNS prefix to use with hosted Kubernetes API server FQDN."
-        }
-      },
-      "spsecret": {
-        "type": "string",
-        "metadata": {
-          "description": "Optional DNS prefix to use with hosted Kubernetes API server FQDN."
-        }
-      },
+    },    
      "acrSku": {
       "type": "string",
       "metadata": {
