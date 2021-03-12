@@ -1,0 +1,48 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Pipeline
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+    paths: 
+    - microhack-aks-devops-github-actions/**/**
+    - .github/workflows/pipelinehelm.yaml
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+# Env to set reusable variables
+env:
+  RGName: GitHub-AKS-Microhack-rg
+  ClusterName: githubakscluster
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build" 
+          
+  CD:
+    runs-on: ubuntu-latest    
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Azure Kubernetes set context
+        uses: Azure/aks-set-context@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          resource-group: GitHub-AKS-Microhack-rg
+          cluster-name: githubakscluster
+
+      - name: Helm upgrade
+        run: |
+          helm upgrade website "2. Update a deployment using helm/website" --install \
+            --set image.repository=nfranssens/simple-website \
+            --set image.tag=v2
+      - name: Get service IP
+        run: |
+          PUBLICIP=""
+          while [ -z $PUBLICIP ]; do
+            echo "Waiting for public IP..."
+            PUBLICIP=$(kubectl get service website -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+            [ -z "$PUBLICIP" ] && sleep 10
+          done
+          echo $PUBLICIP
