@@ -19,12 +19,6 @@
       },
       "acrAdminUserEnabled": {
         "value": false
-      },
-      "spid": {
-        "value": "f4b77985-638e-4130-9592-12403cb22d76"
-      },
-      "spsecret": {
-        "value": "7ekUnwzlx3wGDxU.1ZeTu1g-UkVxuoT_bT"
-      }
+      }      
     }
   }
