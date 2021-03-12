@@ -94,9 +94,26 @@ jobs:
               --set $UPDATE.repository=$ACRNAME.azurecr.io/microhack/website \
               --set $UPDATE.tag=${{ github.run_number }} 
           kubectl rollout status deployment bg-pipeline-website-$UPDATE
-        
+
+  Flip:
+    runs-on: ubuntu-latest
+    needs: CD
+    env: CD
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2 
+      - name: Check which flip is needed
+        continue-on-error: true
+        run: |
+          COLOR=`kubectl get svc bg-pipeline-website -o yaml | grep " color" | awk -F ' ' '{print $2}'`
+          echo "Current prod is $COLOR"
+          if [ "$COLOR" = "blue" ]
+          then
+            echo "UPDATE=green" >> $GITHUB_ENV
+          else
+            echo "UPDATE=blue" >> $GITHUB_ENV
+          fi  
       - name: Flip production service
-        if: ${{ env.STATUS == 'update' }}
         run: |
           echo "Flipping service to $UPDATE"
           helm upgrade bg-pipeline "4. Simple blue green/website" --reuse-values \
