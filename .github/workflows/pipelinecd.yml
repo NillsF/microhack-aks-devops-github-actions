@@ -36,7 +36,7 @@ jobs:
         uses: Azure/k8s-deploy@v1.4
         with:          
           manifests: |
-              .github/workflows/deployment.yaml
+              "1. Update a deployment/deployment.yaml"
           kubectl-version: 'latest'
           
       - name: Get service IP
