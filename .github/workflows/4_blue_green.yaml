@@ -98,7 +98,7 @@ jobs:
   Flip:
     runs-on: ubuntu-latest
     needs: CD
-    env: CD
+    environment: CD
     steps:
       - name: Git checkout
         uses: actions/checkout@v2 
