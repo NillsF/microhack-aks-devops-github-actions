@@ -11,6 +11,7 @@ This microhack consists of 5 steps:
 Each step is contained in a folder, with the required explanation. 
 
 It is recommended to fork this repository, and then iteratively build your own GitHub actions.
+After forking the repo, you can delete the .github/workflows folder if you want to build the workflows from scratch.
 
 # Optional: visualization tool
 A totally optional add-on to this Microhack is the clusterinfo tool built by Mark Kizhnerman. This tool can show you what is deployed on your cluster, and will show you live updates.
